@@ -1,0 +1,34 @@
+.boxsizingBorder {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.not-there {
+  display: none;
+}
+
+.special a {
+  color :#f1961d;
+}
+.document {
+  height : 80px;
+  width : 120px;
+  overflow:hidden;
+  border-left: solid 9px #767e49;
+}
+.document p{
+  line-height: 80px;
+  vertical-align: middle;
+  text-align: center;
+}
+#ed {
+  height : 75%;
+  width : 49%;
+  border: 1px solid #ccc;
+}
+#document-summary-list{
+  list-style-image:url('/img/document-small.png');
+}
+#document-summary-list li{
+  overflow : hidden;
+}

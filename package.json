@@ -1,0 +1,27 @@
+{
+  "name": "WebMatrixExpressSite",
+  "version": "0.1.0",
+  "author": "The WebMatrix Team <webmatrix@microsoft.com>",
+  "description": "A simple boilerplate for building node applications on Windows Azure (or wherever)",
+  "contributors": [ 
+    {
+      "name": "Justin Beckwith",
+      "email": "justbe@microsoft.com"
+    } 
+  ],  
+  "main": "./server.js",  
+  "keywords": [
+    "azure",
+    "boilerplate",
+    "express"
+  ],
+  "dependencies" : {
+    "express": "2.5.7",
+    "jade": ">= 0.0.1"
+  },
+  "noAnalyze": true,
+  "license": "Apache",
+  "engines": {
+    "node": ">=0.6.14"
+  }
+}

@@ -1,0 +1,17 @@
+
+failed to locate view "mongo", tried:
+  - C:\Projects\Congo/views/mongo.jade
+  - C:\Projects\Congo/views/mongo/index.jade
+  - C:\Projects\Congo/views/../mongo/index.jade
+
+Error: failed to locate view "mongo"
+    at Function.exports.compile (C:\Projects\Congo\node_modules\express\lib\view.js:61:15)
+    at ServerResponse.res._render (C:\Projects\Congo\node_modules\express\lib\view.js:417:18)
+    at ServerResponse.res.render (C:\Projects\Congo\node_modules\express\lib\view.js:318:17)
+    at app.get.res.render.title (C:\Projects\Congo\lib\congo.js:9:9)
+    at callbacks (C:\Projects\Congo\node_modules\express\lib\router\index.js:272:11)
+    at param (C:\Projects\Congo\node_modules\express\lib\router\index.js:246:11)
+    at pass (C:\Projects\Congo\node_modules\express\lib\router\index.js:253:5)
+    at Router._dispatch (C:\Projects\Congo\node_modules\express\lib\router\index.js:280:5)
+    at Object.middleware [as handle] (C:\Projects\Congo\node_modules\express\lib\router\index.js:45:10)
+    at next (C:\Projects\Congo\node_modules\express\node_modules\connect\lib\http.js:204:15)
