@@ -2,11 +2,25 @@
   ul#breadcrumbs.breadcrumb.span12
 
 .row
-  #database-list.span12
+  #database-list.span9
+  #db-options.span3
 
+script#new-db-template(type="text/backbone")
+  form#addDb
+    input(id='newDb', type="text")
+    button.btn(type="submit")
+      i.icon.icon-plus-sign
+      | Add Db
 script#database-list-template(type="text/backbone")
-  <td><a href = '#'><%=name%></a></td>
-  <td><button class="btn btn-info">Click Me</button></td>
+    td(width=60)
+      img(src="/img/collections.png", style="height:24px")
+    td
+      h4
+        a(href="#") <%=name%>
+    td
+      button.btn.delete-collection
+        i.icon.icon-remove
+        | delete
 
 script(src="/javascripts/congo/index.js")
 script(src="/javascripts/congo/nav.js")
