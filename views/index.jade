@@ -1,9 +1,14 @@
-.row
-  ul#breadcrumbs.breadcrumb.span12
+#app.row
+  .span12
+    ul#nav.breadcrumb
 
-.row
-  #database-list.span9
-  #db-options.span3
+  #details
+
+script#db-details-template(type="text/backbone")
+  .row
+    .span12
+      #database-list.span8
+      #database-options.span3
 
 script#new-db-template(type="text/backbone")
   form#addDb
@@ -23,6 +28,7 @@ script#database-list-template(type="text/backbone")
         | delete
 
 script(src="/javascripts/congo/index.js")
+script(src="/javascripts/congo/base.js")
 script(src="/javascripts/congo/nav.js")
 script(src="/javascripts/congo/database.js")
 script

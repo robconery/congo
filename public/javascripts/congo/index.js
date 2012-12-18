@@ -5,14 +5,21 @@ Congo = {
     Congo.databases = new Congo.DatabaseCollection();
 
     //views
-    Congo.breadcrumbs = new Congo.BreadcrumbView({ el: "#breadcrumbs" });
-    Congo.databaseList = new Congo.DatabaseListView({ collection: Congo.databases });
+    Congo.breadcrumbs = new Congo.BreadcrumbView({ el: "#nav" });
 
     //start it off
     Congo.start();
   },
 
-  start: function () {
+  showDatabases: function () {
+    var dbLayout = new Congo.DatabaseLayoutView({ collection: Congo.databases });
+    dbLayout.render();
+
+    $("#details").append(dbLayout.el);
     Congo.databases.fetch();
+  },
+
+  start: function () {
+    Congo.showDatabases();
   }
 }

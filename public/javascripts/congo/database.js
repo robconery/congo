@@ -8,10 +8,12 @@ Congo.DatabaseCollection = Backbone.Collection.extend({
   model : Congo.Database,
   url: "/mongo-api/dbs"
 });
-Congo.DatabaseOptionView = Backbone.View.extend({
+
+Congo.DatabaseOptionView = Congo.View.extend({
   initialize: function () {
     this.render();
   },
+  template : "#new-db-template",
   events: {
     "submit form": "addDb"
   },
@@ -21,16 +23,12 @@ Congo.DatabaseOptionView = Backbone.View.extend({
     var newDb = new Congo.Database({ name: newDbName });
     newDb.save();
     Congo.databases.add(newDb);
-  },
-  render: function () {
-    var source = $("#new-db-template").html();
-    var compiled = _.template(source);
-    this.$el.html(compiled);
-    return this;
   }
 });
-Congo.DatabaseView = Backbone.View.extend({
+
+Congo.DatabaseView = Congo.View.extend({
   tagName: "tr",
+  template : "#database-list-template",
   events: {
     "click button": "removeDb"
   },
@@ -40,34 +38,29 @@ Congo.DatabaseView = Backbone.View.extend({
       this.model.destroy();
       Congo.databases.remove(this.model);
     }
-  },
-  render: function () {
-    var template = $("#database-list-template").html();
-    var compiled = _.template(template, this.model.toJSON());
-    this.$el.html(compiled);
-    return this;
   }
+
 });
 
-Congo.DatabaseListView = Backbone.View.extend({
-  initialize: function () {
-    this.collection.bind("reset", this.render, this);
-    this.collection.bind("add", this.render, this);
-    this.collection.bind("remove", this.render, this);
-    this.renderOptionView();
-  },
+Congo.DatabaseListView = Congo.ListView.extend({
   tagName: "table",
   className: "table table-striped",
-  renderOptionView: function () {
-    var optionView = new Congo.DatabaseOptionView({ el: "#db-options" });
-  },
-  render: function () {
-    var els = [];
-    this.collection.each(function (item) {
-      var itemView = new Congo.DatabaseView({ model: item });
-      els.push(itemView.render().el);
-    });
-    this.$el.html(els);
-    $("#database-list").append(this.el);
-  }
+  ItemView : Congo.DatabaseView
 });
+
+Congo.DatabaseLayoutView = Congo.Layout.extend({
+  template: "#db-details-template",
+  regions: {
+    databaseList: "#database-list",
+    databaseOptions: "#database-options"
+  },
+  layoutReady: function () {
+    var dbListView = new Congo.DatabaseListView({ collection: this.collection });
+    var optionView = new Congo.DatabaseOptionView({});
+
+    //where to append the view's bits?
+    //to THIS of course!
+    this.databaseList.append(dbListView.render().el);
+    this.databaseOptions.append(optionView.render().el);
+  }
+})
