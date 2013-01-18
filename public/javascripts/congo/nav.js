@@ -1,15 +1,24 @@
 Congo.BreadcrumbView = Backbone.View.extend({
   initialize: function () {
-    this.render();
+    Congo.router.on("route:index", this.renderIndex, this);
+    Congo.router.on("route:showDatabase", this.renderDatabase, this);
   },
-  render: function () {
-    $(this.el).append("<li><h3><a href='#'>DATABASES</a></h3></li>");
+  renderIndex: function () {
+    this.$el.empty();
+    $(this.el).append("<li><h3>DATABASES</h3></li>");
+    return this;
+  },
+  renderDatabase: function (db) {
+    this.$el.empty();
+    this.$el.append("<li><h3><a href='#' id='summary'>DATABASES</a><span class='divider'>/</span></h3></li>");
+    this.$el.append("<li><h3>" + db + "</h3></li>");
     return this;
   },
   events: {
-    "click a": "sayHello"
+    "click #summary": "navIndex"
   },
-  sayHello: function () {
-    alert("Hello!");
+  navIndex: function (ev) {
+    ev.preventDefault();
+    Congo.router.navigate("", true);
   }
 });
