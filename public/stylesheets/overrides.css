@@ -1,3 +1,11 @@
+#ace-editor { 
+  height : 68%;
+  width : 89%;
+  border: 1px solid #ccc;
+  font-size: 16pt;
+  line-height: 1.6;
+}
+
 .boxsizingBorder {
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;

@@ -23,6 +23,7 @@ Congo.CollectionView = Congo.ItemView.extend({
   show: function (ev) {
     ev.preventDefault();
     var collectionName = $(ev.currentTarget).data("collection");
+    Congo.router.navigate(Congo.currentDatabase + "/" + collectionName,true);
     //navigate to documents when we get there
   }
 });

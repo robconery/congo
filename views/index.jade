@@ -1,20 +1,36 @@
-#app.row
-  .span12
-    ul#nav.breadcrumb
+#app
+  .row
+    .span12
+      ul#nav.breadcrumb
 
   #details
+  #editor
+    .row
+      #editor-options
+        .span1.pull-right
+          button.btn.btn-danger Delete
+        .span1.pull-right
+          button.btn.btn-success Save
+
+    .row
+      #ace-editor.span12
 
 script#collection-details-template(type="text/backbone")
   .row
-    .span12
-      #collection-list.span8
-      #collection-options.span3
+    #collection-list.span8
+    #collection-options.span3
 
 script#db-details-template(type="text/backbone")
   .row
+    #database-list.span8
+    #database-options.span3
+
+script#document-details-template(type="text/backbone")
+  .row
     .span12
-      #database-list.span8
-      #database-options.span3
+      #document-list.span8
+      #document-options.span3
+
 
 script#new-db-template(type="text/backbone")
   form#addDb
@@ -52,11 +68,26 @@ script#database-list-template(type="text/backbone")
         i.icon.icon-remove
         | delete
 
+script(id='new-document-template', type="text/template")
+  button.btn(id='addDocument')
+    i.icon.icon-plus-sign
+    | Add
+
+script(id="document-item-template", type="text/template")
+  a(href="#")
+    li.document.thumbnail
+      p <%=descriptor%>
+
 script(src="/javascripts/congo/index.js")
 script(src="/javascripts/congo/base.js")
 script(src="/javascripts/congo/nav.js")
 script(src="/javascripts/congo/database.js")
 script(src="/javascripts/congo/collections.js")
+script(src="/javascripts/congo/documents.js")
+script(src="/javascripts/ace/ace.js") 
+script(src="/javascripts/ace/mode-json.js")
+
+
 script
   $(function(){
     Congo.start();
