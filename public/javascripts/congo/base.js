@@ -1,4 +1,4 @@
-
+// The Base View from which (almost) all views inherit
 Congo.View = Backbone.View.extend({
   render: function () {
     var source = $(this.template).html();
@@ -11,6 +11,7 @@ Congo.View = Backbone.View.extend({
   }
 });
 
+//Items for a list
 Congo.ItemView = Congo.View.extend({
   remove: function () {
     var confirmed = confirm("Delete this? You sure?");
@@ -20,6 +21,7 @@ Congo.ItemView = Congo.View.extend({
   }
 }); 
 
+//Typical ListView functionality kept here
 Congo.ListView = Backbone.View.extend({
   initialize: function () {
     this.collection.bind("reset", this.render, this);
@@ -30,20 +32,22 @@ Congo.ListView = Backbone.View.extend({
   render: function () {
     var self = this;
     var els = [];
+    this.$el.empty();
     this.collection.each(function (item) {
       var itemView = new self.ItemView({ model: item });
       els.push(itemView.render().el);
     });
-    this.$el.html(els);
+    this.$el.append(els);
     return this;
   }
 });
 
+//Layouts control other views
 Congo.Layout = Backbone.View.extend({
 
   render: function () {
 
-    //empty the el TOAD
+    //empty the el
     this.$el.empty();
 
     //add the details template to the DOM
@@ -68,6 +72,8 @@ Congo.Layout = Backbone.View.extend({
 
 });
 
+//Specific to our app: works the detail regions and
+//allows for the AceEditor to happily exist
 Congo.AppLayout = Backbone.View.extend({
   hideEverything: function () {
     this.$(this.options.detailRegion).empty();
@@ -75,15 +81,9 @@ Congo.AppLayout = Backbone.View.extend({
   },
   renderEditor: function (thing) {
     this.hideEverything();
-    var docJSON = JSON.stringify(thing, null,'  ');
+    Congo.editorView.setModel(thing);
     //render out the ace editor
     this.$(this.options.editorRegion).show();
-    var editor = ace.edit("ace-editor");
-    var JsonMode = require("ace/mode/json").Mode;
-    editor.getSession().setMode(new JsonMode());
-    editor.setValue(docJSON);   
-    editor.selection.clearSelection();
-
   },
   renderDetails: function (detailView) {
     //pass the region in on init...

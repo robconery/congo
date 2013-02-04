@@ -1,18 +1,20 @@
 {
-  "name": "WebMatrixExpressSite",
+  "name": "Congo",
   "version": "0.1.0",
-  "author": "The WebMatrix Team <webmatrix@microsoft.com>",
-  "description": "A simple boilerplate for building node applications on Windows Azure (or wherever)",
+  "author": "Rob Conery, Tekpub <rob@tekpub.com>",
+  "description": "A MongoDB Explorer written in Backbone using Twitter Bootstrap. Part of Tekpub's Backbone series",
   "contributors": [ 
     {
-      "name": "Justin Beckwith",
-      "email": "justbe@microsoft.com"
+      "name": "Rob Conery",
+      "email": "rob@tekpub.com"
     } 
   ],  
   "main": "./server.js",  
   "keywords": [
-    "azure",
-    "boilerplate",
+    "tekpub",
+    "backbone",
+    "mongodb",
+    "node",
     "express"
   ],
   "dependencies" : {
@@ -20,7 +22,7 @@
     "jade": ">= 0.0.1"
   },
   "noAnalyze": true,
-  "license": "Apache",
+  "license": "NewBSD",
   "engines": {
     "node": ">=0.6.14"
   }

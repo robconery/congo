@@ -2,7 +2,7 @@ Congo.Database = Backbone.Model.extend({
   url: function () {
     return "/mongo-api/dbs/" + this.id;
   },
-  idAttribute: "name"
+  idAttribute: "name",
 });
 Congo.DatabaseCollection = Backbone.Collection.extend({
   model : Congo.Database,
@@ -56,9 +56,6 @@ Congo.DatabaseLayoutView = Congo.Layout.extend({
   layoutReady: function () {
     var dbListView = new Congo.DatabaseListView({ collection: this.collection });
     var optionView = new Congo.DatabaseOptionView({});
-
-    //where to append the view's bits?
-    //to THIS of course!
     this.databaseList.append(dbListView.render().el);
     this.databaseOptions.append(optionView.render().el);
   }

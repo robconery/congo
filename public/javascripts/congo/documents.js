@@ -1,28 +1,33 @@
 Congo.MongoDocument = Backbone.Model.extend({
   idAttribute: "_id",
   url: function () {
-    var baseUrl = "/mongo-api/" + Congo.currentDatabase + "/" + Congo.selectedCollection;
+    var baseUrl = "/mongo-api/" +
+    Congo.currentDatabase + "/" +
+    Congo.selectedCollection;
     if (this.isNew()) {
       return baseUrl;
     } else {
       return baseUrl + "/" + this.id;
     }
   },
-
+  validate: function (atts,options) {
+    console.log(atts);
+  },
   descriptor: function () {
-    if(this.get("name"))
+    if (this.get("name"))
       return this.get("name");
-    if(this.get("sku"))
+    if (this.get("sku"))
       return this.get("sku");
-    if(this.get("slug"))
+    if (this.get("slug"))
       return this.get("slug");
-    else if(this.get("title"))
+    else if (this.get("title"))
       return this.get("title");
-    else if(this.get("email"))
+    else if (this.get("email"))
       return this.get("email");
     else
       return this.get("_id");
   }
+
 });
 
 Congo.MongoDocuments = Backbone.Collection.extend({
@@ -32,17 +37,71 @@ Congo.MongoDocuments = Backbone.Collection.extend({
   }
 });
 
+Congo.EditorView = Congo.View.extend({
+  template: "#editor-template",
+  initialize: function () {
+    this.render();
+  },
+  events: {
+    "click #save-document": "saveDocument",
+    "click #delete-document" : "deleteDocument"
+  },
+  saveDocument: function () {
+
+    var json = Congo.editor.getValue();
+    try {
+      var parsed = JSON.parse(json);
+      var newDocument = new Congo.MongoDocument(parsed);
+      newDocument.save(newDocument.attributes, {
+        success: function (model) {
+          Congo.navCollection();
+        },
+        error: function (model, result) {
+          alert("There was a problem on save. Check the server");
+        }
+      });
+    } catch (err) {
+      alert("We have a JSON problem");
+    }
+  },
+  deleteDocument: function () {
+    if (confirm("Delete this document? You sure?")) {
+      this.model.destroy();
+      Congo.navCollection();
+    }
+  },
+  setModel: function (model) {
+    this.model = model || new Congo.MongoDocument();
+    var docJSON = JSON.stringify(this.model.toJSON(), null, '  ');
+    Congo.editor.setValue(docJSON);
+    Congo.editor.selection.clearSelection();
+  },
+  render: function () {
+    var source = $(this.template).html();
+    var compiled = _.template(source);
+    this.$el.append(compiled);
+
+    Congo.editor = ace.edit("ace-editor");
+    var JsonMode = require("ace/mode/json").Mode;
+    Congo.editor.getSession().setMode(new JsonMode());
+    return this;
+  }
+
+});
+
 Congo.DocumentView = Congo.ItemView.extend({
   template: "#document-item-template",
+  className : "document pull-left",
   events: {
     "click button": "remove",
     "click a": "show"
   },
   show: function (ev) {
     ev.preventDefault();
-    var route = Congo.currentDatabase + "/" + Congo.selectedCollection + "/" + this.model.id;
-    Congo.router.navigate(route, true);
+    Congo.navDocument(this.model.id);
   },
+  //override the render function as we're doing something
+  //different with the model
   render: function () {
     var source = $(this.template).html();
     var data = { descriptor: this.model.descriptor() };
@@ -53,8 +112,6 @@ Congo.DocumentView = Congo.ItemView.extend({
 });
 
 Congo.DocumentListView = Congo.ListView.extend({
-  tagName: "ul",
-  className: "thumbnails",
   ItemView : Congo.DocumentView
 });
 
@@ -62,16 +119,13 @@ Congo.DocumentOptionView = Congo.View.extend({
   initialize: function () {
     this.render();
   },
-  template : "#new-document-template",
+  template: "#new-document-template",
   events: {
-    "submit form": "addDocument"
+    "click button": "addDocument"
   },
   addDocument: function (event) {
     event.preventDefault();
-    //var newCollectionName = $("#newCollection").val();
-    //var newCollection = new Congo.MongoCollection({ name: newCollectionName });
-    //newCollection.save();
-    //Congo.currentCollection.add(newCollection);
+    Congo.navDocument("new");
   }
 });
 
