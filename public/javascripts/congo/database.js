@@ -2,14 +2,14 @@ Congo.Database = Backbone.Model.extend({
   url: function () {
     return "/mongo-api/dbs/" + this.id;
   },
-  idAttribute: "name",
+  idAttribute: "name"
 });
 Congo.DatabaseCollection = Backbone.Collection.extend({
   model : Congo.Database,
   url: "/mongo-api/dbs"
 });
 
-Congo.DatabaseOptionView = Congo.View.extend({
+Congo.DatabaseOptionView = Marionette.ItemView.extend({
   initialize: function () {
     this.render();
   },
@@ -26,37 +26,46 @@ Congo.DatabaseOptionView = Congo.View.extend({
   }
 });
 
-Congo.DatabaseView = Congo.ItemView.extend({
+Congo.DatabaseView = Marionette.ItemView.extend({
   tagName: "tr",
   template: "#database-list-template",
   events: {
-    "click button": "remove",
+    "click button": "removeDb",
     "click a": "showDb"
+  },
+  removeDb: function () {
+    var confirmed = confirm("Delete this? You sure?");
+    if (confirmed) {
+      this.model.destroy();
+    }
   },
   showDb: function (ev) {
     ev.preventDefault();
     var db = $(ev.currentTarget).data("db");
-    Congo.router.navigate(db,true);
+    Congo.navDatabase(db);
   }
 
 });
 
-Congo.DatabaseListView = Congo.ListView.extend({
+Congo.DatabaseListView = Marionette.CollectionView.extend({
   tagName: "table",
   className: "table table-striped",
-  ItemView : Congo.DatabaseView
+  itemView : Congo.DatabaseView,
+  onRender : function(){
+    console.log("Rendered")
+  }
 });
 
-Congo.DatabaseLayoutView = Congo.Layout.extend({
+Congo.DatabaseLayoutView = Marionette.Layout.extend({
   template: "#db-details-template",
   regions: {
     databaseList: "#database-list",
     databaseOptions: "#database-options"
   },
-  layoutReady: function () {
+  onRender: function () {
     var dbListView = new Congo.DatabaseListView({ collection: this.collection });
     var optionView = new Congo.DatabaseOptionView({});
-    this.databaseList.append(dbListView.render().el);
-    this.databaseOptions.append(optionView.render().el);
+    this.databaseList.show(dbListView);
+    this.databaseOptions.show(optionView);
   }
 })

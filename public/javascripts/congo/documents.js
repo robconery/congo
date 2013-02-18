@@ -1,17 +1,18 @@
 Congo.MongoDocument = Backbone.Model.extend({
   idAttribute: "_id",
   url: function () {
-    var baseUrl = "/mongo-api/" +
-    Congo.currentDatabase + "/" +
-    Congo.selectedCollection;
+    var baseUrl = "/mongo-api/" + Congo.currentDatabase + "/" + Congo.selectedCollection;
     if (this.isNew()) {
       return baseUrl;
     } else {
       return baseUrl + "/" + this.id;
     }
   },
-  validate: function (atts,options) {
-    console.log(atts);
+  setSelected: function (id) {
+    this.set({ _id: id }, { silent: true });
+    //set it off
+    console.log("FETCHING")
+    this.fetch();
   },
   descriptor: function () {
     if (this.get("name"))
@@ -27,7 +28,6 @@ Congo.MongoDocument = Backbone.Model.extend({
     else
       return this.get("_id");
   }
-
 });
 
 Congo.MongoDocuments = Backbone.Collection.extend({
@@ -37,71 +37,62 @@ Congo.MongoDocuments = Backbone.Collection.extend({
   }
 });
 
-Congo.EditorView = Congo.View.extend({
+Congo.EditorView = Marionette.ItemView.extend({
   template: "#editor-template",
-  initialize: function () {
-    this.render();
-  },
   events: {
     "click #save-document": "saveDocument",
-    "click #delete-document" : "deleteDocument"
+    "click #delete-document": "deleteDocument"
   },
   saveDocument: function () {
-
-    var json = Congo.editor.getValue();
+    var json = this.editor.getValue();
     try {
       var parsed = JSON.parse(json);
       var newDocument = new Congo.MongoDocument(parsed);
       newDocument.save(newDocument.attributes, {
-        success: function (model) {
+        success: function (model, result) {
           Congo.navCollection();
+          $("#app").effect("highlight");
         },
         error: function (model, result) {
-          alert("There was a problem on save. Check the server");
+          alert("We have a JSON problem");
         }
       });
     } catch (err) {
-      alert("We have a JSON problem");
+      alert("We have a JSON problem: " + err);
     }
   },
   deleteDocument: function () {
-    if (confirm("Delete this document? You sure?")) {
+    if (confirm("Delete this document? Are you sure?")) {
       this.model.destroy();
+      //navigate back to users
       Congo.navCollection();
-    }
+    };
   },
-  setModel: function (model) {
-    this.model = model || new Congo.MongoDocument();
-    var docJSON = JSON.stringify(this.model.toJSON(), null, '  ');
-    Congo.editor.setValue(docJSON);
-    Congo.editor.selection.clearSelection();
-  },
-  render: function () {
-    var source = $(this.template).html();
-    var compiled = _.template(source);
-    this.$el.append(compiled);
+  onShow: function () {
 
-    Congo.editor = ace.edit("ace-editor");
+    this.editor = ace.edit("ace-editor");
     var JsonMode = require("ace/mode/json").Mode;
-    Congo.editor.getSession().setMode(new JsonMode());
-    return this;
-  }
+    this.editor.getSession().setMode(new JsonMode());
 
+    this.model = this.model || new Congo.MongoDocument();
+
+    var docJSON = JSON.stringify(this.model.toJSON(), null, '  ');
+    this.editor.setValue(docJSON);
+    this.editor.selection.clearSelection();
+  }
 });
 
-Congo.DocumentView = Congo.ItemView.extend({
+Congo.DocumentView = Marionette.ItemView.extend({
   template: "#document-item-template",
   className : "document pull-left",
   events: {
-    "click button": "remove",
-    "click a": "show"
+    "click a": "showDocument"
   },
-  show: function (ev) {
+
+  showDocument: function (ev) {
     ev.preventDefault();
     Congo.navDocument(this.model.id);
   },
-  //override the render function as we're doing something
-  //different with the model
   render: function () {
     var source = $(this.template).html();
     var data = { descriptor: this.model.descriptor() };
@@ -111,11 +102,11 @@ Congo.DocumentView = Congo.ItemView.extend({
   }
 });
 
-Congo.DocumentListView = Congo.ListView.extend({
-  ItemView : Congo.DocumentView
+Congo.DocumentListView = Marionette.CollectionView.extend({
+  itemView : Congo.DocumentView
 });
 
-Congo.DocumentOptionView = Congo.View.extend({
+Congo.DocumentOptionView = Marionette.ItemView.extend({
   initialize: function () {
     this.render();
   },
@@ -124,21 +115,20 @@ Congo.DocumentOptionView = Congo.View.extend({
     "click button": "addDocument"
   },
   addDocument: function (event) {
-    event.preventDefault();
     Congo.navDocument("new");
   }
 });
 
-Congo.DocumentLayoutView = Congo.Layout.extend({
+Congo.DocumentLayoutView = Marionette.Layout.extend({
   template: "#document-details-template",
   regions: {
     documentList: "#document-list",
     documentOptions: "#document-options"
   },
-  layoutReady: function () {
+  onRender: function () {
     var documentListListView = new Congo.DocumentListView({ collection: this.collection });
     var optionView = new Congo.DocumentOptionView({});
-    this.documentList.append(documentListListView.render().el);
-    this.documentOptions.append(optionView.render().el);
+    this.documentList.show(documentListListView);
+    this.documentOptions.show(optionView);
   }
 })

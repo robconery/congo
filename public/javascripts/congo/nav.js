@@ -6,9 +6,6 @@ Congo.BreadcrumbView = Backbone.View.extend({
     Congo.router.on("route:showEditor", this.renderEditor, this);
     Congo.router.on("route:newDocument", this.renderNewDocument, this);
   },
-
-  //The only reason I chose to put this here is because
-  //the amount of templates drives me crazy
   crumb: function (caption, addSeparator) {
     var crumb = "<li><h3>" + caption + "</h3></li>";
     if (addSeparator) {
@@ -16,7 +13,6 @@ Congo.BreadcrumbView = Backbone.View.extend({
     }
     return crumb;
   },
-
   crumbWithLink: function (caption, id, addSeparator) {
     var crumb = "<li><h3><a href='#' id='" + id + "'>" + caption + "</a>";
     if (addSeparator) {
@@ -27,8 +23,6 @@ Congo.BreadcrumbView = Backbone.View.extend({
   crumbSeparator: function () {
     return "<span class='divider'>/</span></h3></li>";
   },
-
-  //no repeats!
   showHomeLink: function () {
     this.$el.append(this.crumbWithLink("DATABASES", "navIndex", true));
   },
@@ -63,7 +57,7 @@ Congo.BreadcrumbView = Backbone.View.extend({
     this.showCollectionLink(collection);
     this.$el.append(this.crumb(id));
   },
-  renderNewDocument: function (db, collection, id) {
+  renderNewDocument: function (db, collection) {
     this.$el.empty();
     this.showHomeLink();
     this.showDbLink(db);
@@ -78,7 +72,6 @@ Congo.BreadcrumbView = Backbone.View.extend({
   navCollection: function (ev) {
     ev.preventDefault();
     Congo.navCollection();
-
   },
   navDb: function (ev) {
     ev.preventDefault();

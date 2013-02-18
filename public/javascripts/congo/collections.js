@@ -13,28 +13,33 @@ Congo.MongoCollections = Backbone.Collection.extend({
   }
 });
 
-Congo.CollectionView = Congo.ItemView.extend({
+Congo.CollectionView = Marionette.ItemView.extend({
   tagName: "tr",
   template: "#collection-list-template",
   events: {
-    "click button": "remove",
-    "click a": "show"
+    "click button": "removeCollection",
+    "click a": "showCollection"
   },
-  show: function (ev) {
+  removeCollection: function () {
+    var confirmed = confirm("Delete this? You sure?");
+    if (confirmed) {
+      this.model.destroy();
+    }
+  },
+  showCollection: function (ev) {
     ev.preventDefault();
     var collectionName = $(ev.currentTarget).data("collection");
     Congo.navCollection(collectionName);
-    
   }
 });
 
-Congo.CollectionListView = Congo.ListView.extend({
+Congo.CollectionListView = Marionette.CollectionView.extend({
   tagName: "table",
   className: "table table-striped",
-  ItemView : Congo.CollectionView
+  itemView : Congo.CollectionView
 });
 
-Congo.CollectionOptionView = Congo.View.extend({
+Congo.CollectionOptionView = Marionette.ItemView.extend({
   initialize: function () {
     this.render();
   },
@@ -51,16 +56,16 @@ Congo.CollectionOptionView = Congo.View.extend({
   }
 });
 
-Congo.CollectionLayoutView = Congo.Layout.extend({
+Congo.CollectionLayoutView = Marionette.Layout.extend({
   template: "#collection-details-template",
   regions: {
     collectionList: "#collection-list",
     collectionOptions: "#collection-options"
   },
-  layoutReady: function () {
+  onRender: function () {
     var collectionListView = new Congo.CollectionListView({ collection: this.collection });
     var optionView = new Congo.CollectionOptionView({});
-    this.collectionList.append(collectionListView.render().el);
-    this.collectionOptions.append(optionView.render().el);
+    this.collectionList.show(collectionListView);
+    this.collectionOptions.show(optionView);
   }
 })
