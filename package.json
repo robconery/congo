@@ -19,7 +19,9 @@
   ],
   "dependencies" : {
     "express": "2.5.7",
-    "jade": ">= 0.0.1"
+    "jade": ">= 0.0.1",
+    "mongoskin" : "0.4.4",
+    "underscore" : "1.4.2"
   },
   "noAnalyze": true,
   "license": "NewBSD",
